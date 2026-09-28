@@ -8,9 +8,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <meta property="og:title" content="Love Calculator💕">
 <meta property="og:description" content="Find out your love score in 5 seconds 💖">
-<meta property="og:image" content="cover.png">
+<meta property="og:image" content="https://love-calculatorx.vercel.app/cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://love-calculatorx.vercel.app/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Love Calculator💕">
+<meta name="twitter:description" content="Find out your love score in 5 seconds 💖">
+<meta name="twitter:image" content="https://love-calculatorx.vercel.app/cover.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Pacifico&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -38,6 +44,99 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* ================= SPLASH SCREEN ================= */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #ffe5f1 0%, #f5d5ff 45%, #e0d4ff 100%);
+    transition: opacity 0.7s var(--ease-out), visibility 0.7s var(--ease-out);
+  }
+  #splash.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .splash-heart {
+    width: 110px;
+    height: 100px;
+    margin-bottom: 18px;
+    animation: splashPop 0.8s var(--ease-spring) forwards,
+               splashBeat 1.2s var(--ease-soft) 0.8s infinite;
+    transform: scale(0);
+    filter: drop-shadow(0 10px 24px rgba(255, 77, 148, 0.4));
+  }
+  @keyframes splashPop {
+    0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+    60%  { transform: scale(1.15) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  @keyframes splashBeat {
+    0%, 100% { transform: scale(1); }
+    22%      { transform: scale(1.1); }
+    45%      { transform: scale(1); }
+    68%      { transform: scale(1.06); }
+  }
+
+  .splash-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 34px;
+    line-height: 1.1;
+    background: linear-gradient(120deg, #ff4d94 0%, #d63384 45%, #b388eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.4px;
+    opacity: 0;
+    animation: splashTextIn 0.9s var(--ease-out) 0.4s forwards;
+  }
+  @keyframes splashTextIn {
+    from { opacity: 0; transform: translate3d(0, 14px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  .splash-sub {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #a78bc7;
+    margin-top: 8px;
+    letter-spacing: 0.4px;
+    opacity: 0;
+    animation: splashTextIn 0.9s var(--ease-out) 0.7s forwards;
+  }
+
+  .splash-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 22px;
+    opacity: 0;
+    animation: splashTextIn 0.6s var(--ease-out) 0.9s forwards;
+  }
+  .splash-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b9d, #d63384);
+    animation: dotPulse 1.2s var(--ease-soft) infinite;
+  }
+  .splash-dots span:nth-child(1) { animation-delay: 0s; }
+  .splash-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .splash-dots span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50%      { transform: scale(1.35); opacity: 1; }
+  }
+
+  /* Hides scroll and gives the page a subtle entrance when splash fades */
+  body.splashing { overflow: hidden; }
+  /* ================================================= */
 
   #bgHearts {
     position: fixed; inset: 0;
@@ -659,6 +758,8 @@
     .chip { font-size: 10.5px; padding: 8px 3px 7px; }
     .chip-emoji { font-size: 15px; }
     .form-panel { max-height: 480px; }
+    .splash-heart { width: 90px; height: 82px; }
+    .splash-title { font-size: 28px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -670,7 +771,33 @@
   }
 </style>
 </head>
-<body>
+<body class="splashing">
+
+<!-- ================= SPLASH SCREEN ================= -->
+<div id="splash">
+  <svg class="splash-heart" viewBox="0 0 100 92" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="splashHeartGrad" cx="38%" cy="30%">
+        <stop offset="0%" stop-color="#ffc2dd"/>
+        <stop offset="50%" stop-color="#ff4d94"/>
+        <stop offset="100%" stop-color="#c9226f"/>
+      </radialGradient>
+    </defs>
+    <path d="M 50 88 C 15 62, 3 42, 3 27 C 3 12, 16 3, 29 3 C 39 3, 47 10, 50 17 C 53 10, 61 3, 71 3 C 84 3, 97 12, 97 27 C 97 42, 85 62, 50 88 Z" fill="url(#splashHeartGrad)"/>
+    <ellipse cx="30" cy="25" rx="10" ry="6.5" fill="#fff" opacity="0.55"/>
+    <ellipse cx="24" cy="34" rx="5" ry="3" fill="#fff" opacity="0.35"/>
+    <circle cx="72" cy="68" r="3" fill="#ff9ac9" opacity="0.55"/>
+    <circle cx="28" cy="72" r="2.2" fill="#ff9ac9" opacity="0.45"/>
+  </svg>
+  <h1 class="splash-title">Love Calculator</h1>
+  <p class="splash-sub">Who's on your mind? 🤫</p>
+  <div class="splash-dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<!-- ================================================= -->
 
 <div id="bgHearts"></div>
 
@@ -858,6 +985,42 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ================================================== */
 
+  /* ================= SPLASH SCREEN ================= */
+  (function handleSplash() {
+    // Minimum time to show the splash (feels intentional, not janky)
+    const MIN_SHOW_MS = 4000;
+    const start = performance.now();
+
+    function hideSplash() {
+      const elapsed = performance.now() - start;
+      const remaining = Math.max(0, MIN_SHOW_MS - elapsed);
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        splash.classList.add('hide');
+        document.body.classList.remove('splashing');
+        // Remove from DOM after transition ends (frees memory)
+        setTimeout(() => splash.remove(), 800);
+      }, remaining);
+    }
+
+    if (document.readyState === 'complete') {
+      hideSplash();
+    } else {
+      window.addEventListener('load', hideSplash);
+    }
+
+    // Safety net: force hide after 3s no matter what (slow network fallback)
+    setTimeout(() => {
+      const splash = document.getElementById('splash');
+      if (splash && !splash.classList.contains('hide')) {
+        splash.classList.add('hide');
+        document.body.classList.remove('splashing');
+        setTimeout(() => splash.remove(), 800);
+      }
+    }, 4000);
+  })();
+  /* ================================================= */
+
   (function spawnBgHearts() {
     const container = document.getElementById('bgHearts');
     const emojis = ['💖','💕','💗','💓','💞','🩷','💘'];
@@ -989,7 +1152,6 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   /* ---------- Save to Supabase (fire-and-forget, non-blocking) ---------- */
   function saveCalculation(name1, name2, category, score) {
-    // Fire and forget — never blocks the UI. Errors go to console only.
     db.from('calculations')
       .insert([{
         name1: name1,
@@ -1016,7 +1178,6 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const base = loveScore(name1, name2, selectedCat.id);
     const score = Math.max(0, Math.min(100, base + selectedCat.mod));
 
-    // SILENTLY SAVE — happens instantly, doesn't affect animations
     saveCalculation(name1, name2, selectedCat.id, score);
 
     formPanel.classList.add('hide');
@@ -1040,7 +1201,6 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     busy = false;
   }
 
-  /* ---------- Share with randomizer (never repeats last message) ---------- */
   const SHARE_MESSAGES = [
     `Wait... how did it know?? 😳💖 find your love score 👉 ${'{URL}'}`,
     `You + your crush in 5 seconds. Do it 💕 I dare you 👉 ${'{URL}'}`,
