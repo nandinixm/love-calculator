@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content">
 <meta name="theme-color" content="#f5d5ff">
 <meta name="description" content="Find out your love score in 5 seconds 💖">
 <title>Love Calculator</title>
@@ -28,6 +28,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   html, body { width: 100%; height: 100%; min-height: 100%; overflow: hidden; overscroll-behavior: none; }
   html { min-height: 100%; }
   body { min-height: 100svh; }
@@ -848,6 +849,17 @@
   :root { --visual-h: 100dvh; }
   body { min-height: var(--visual-h); height: var(--visual-h); }
 
+  /* On phones, the browser's address bar is outside the Visual Viewport.
+     Keep the app sized to that viewport so the card is never clipped when
+     the top/bottom browser chrome changes height. */
+  @media (max-width: 600px) {
+    .page {
+      height: 100%;
+      max-height: calc(var(--visual-h) - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      min-height: 0;
+    }
+  }
+
   @media (max-width: 600px) and (min-height: 721px) {
     body { align-items: center; justify-content: center; }
   }
@@ -873,31 +885,21 @@
     .calc-btn { margin-top: 2px; min-height: 44px; padding: 9px; font-size: 15px; }
   }
 
-  /* When the Android keyboard is visible, prioritize the two inputs and
-     keep the app from being pushed underneath the keyboard. */
-  body.keyboard-open .page {
-    /* Never scale the whole page when the keyboard opens.
-       Scaling makes the UI look zoomed-out on Android. Keep normal width
-       and only compact the pieces that need less vertical space. */
-    transform: none;
-    width: 100%;
-    max-width: 400px;
-  }
-  body.keyboard-open .hero {
-    display: none;
-  }
+  /* Keyboard mode: the keyboard overlays the app instead of shrinking/scaling it.
+     Keep the original design size and position while the keyboard is open. */
+  body.keyboard-open,
+  body.keyboard-open .page,
   body.keyboard-open .card {
-    padding-top: 9px;
-    padding-bottom: 10px;
+    zoom: 1;
+    transform: none;
   }
-  body.keyboard-open .stage { height: 96px; margin-bottom: 2px; }
-  body.keyboard-open .character { width: 60px; height: 96px; }
-  body.keyboard-open .form { gap: 4px; }
-  body.keyboard-open .input-wrap input { min-height: 40px; padding-top: 7px; padding-bottom: 7px; }
-  body.keyboard-open .cat-container { padding: 5px 8px 6px; }
-  body.keyboard-open .chip { min-height: 36px; padding: 5px 3px 4px; }
-  body.keyboard-open .chip-emoji { font-size: 13px; }
-  body.keyboard-open .calc-btn { min-height: 40px; padding: 8px; font-size: 14px; }
+
+  /* Never allow focused fields to trigger Android's automatic page zoom. */
+  input, textarea, select {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1161,18 +1163,15 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   /* ================= MOBILE VIEWPORT FIT ================= */
   (function fitToVisualViewport() {
     const root = document.documentElement;
+    // Use the small/stable viewport so browser address-bar changes never
+    // trigger a visual zoom or a compact keyboard layout. The keyboard is
+    // configured to overlay the content instead of resizing it.
     const update = () => {
-      const vv = window.visualViewport;
-      const h = vv ? vv.height : window.innerHeight;
-      root.style.setProperty('--visual-h', `${Math.max(320, h)}px`);
-      // When the keyboard is open, compact the UI so the card stays usable
-      // without introducing page scrolling.
-      const keyboardOpen = vv && (window.innerHeight - vv.height) > 120;
-      document.body.classList.toggle('keyboard-open', !!keyboardOpen);
+      root.style.setProperty('--visual-h', `${Math.max(320, window.innerHeight)}px`);
     };
     update();
     window.addEventListener('resize', update, { passive: true });
-    if (window.visualViewport) window.visualViewport.addEventListener('resize', update, { passive: true });
+    window.addEventListener('orientationchange', update, { passive: true });
   })();
   /* ===================================================== */
 
