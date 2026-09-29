@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f5d5ff">
+<meta name="description" content="Find out your love score in 5 seconds 💖">
 <title>Love Calculator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +28,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { min-height: 100%; overflow-x: hidden; }
+  html, body { width: 100%; height: 100%; min-height: 100%; overflow: hidden; overscroll-behavior: none; }
+  html { min-height: 100%; }
+  body { min-height: 100svh; }
 
   :root {
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -38,11 +42,14 @@
     font-family: 'Quicksand', sans-serif;
     background: linear-gradient(160deg, #ffe5f1 0%, #f5d5ff 45%, #e0d4ff 100%);
     background-attachment: fixed;
-    min-height: 100vh;
+    overscroll-behavior-x: none;
+    touch-action: manipulation;
+    height: 100dvh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 14px 26px;
+    padding: max(14px, env(safe-area-inset-top)) 14px max(20px, env(safe-area-inset-bottom));
     position: relative;
     overflow-x: hidden;
     color: #3d2b4f;
@@ -168,9 +175,11 @@
     z-index: 2;
     width: 100%;
     max-width: 400px;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    max-height: 100%;
   }
 
   .hero { text-align: center; padding: 2px 0 4px; }
@@ -219,6 +228,7 @@
     animation: cardIn 1s var(--ease-out);
     overflow: hidden;
     contain: layout style paint;
+    isolation: isolate;
     will-change: transform, opacity;
   }
   @keyframes cardIn {
@@ -382,7 +392,7 @@
     pointer-events: none;
   }
   .result-panel.show {
-    max-height: 400px;
+    max-height: 520px;
     opacity: 1;
     transform: translate3d(0, 0, 0);
     pointer-events: auto;
@@ -477,6 +487,8 @@
     font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
+    min-height: 48px;
+    touch-action: manipulation;
     transition:
       background 0.3s var(--ease-soft),
       color 0.3s var(--ease-soft),
@@ -513,6 +525,8 @@
     font-weight: 600;
     letter-spacing: 0.4px;
     cursor: pointer;
+    min-height: 52px;
+    touch-action: manipulation;
     box-shadow: none;
     transition: transform 0.3s var(--ease-spring), filter 0.25s var(--ease-soft);
     position: relative;
@@ -678,6 +692,8 @@
     font-size: 14.5px;
     font-weight: 600;
     cursor: pointer;
+    min-height: 48px;
+    touch-action: manipulation;
     transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out);
     box-shadow: 0 4px 12px rgba(179, 136, 235, 0.16);
     border: 1.5px solid rgba(255, 209, 227, 0.9);
@@ -699,6 +715,8 @@
     font-weight: 600;
     letter-spacing: 0.3px;
     cursor: pointer;
+    min-height: 52px;
+    touch-action: manipulation;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -752,6 +770,23 @@
     transform: translate3d(0, 0, 0);
   }
 
+  @media (max-height: 720px) {
+    body { padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+    .page { gap: 7px; }
+    .hero { padding: 0; }
+    .title { font-size: 32px; }
+    .subtitle { margin-top: 3px; font-size: 12px; }
+    .card { padding: 14px 16px 16px; border-radius: 28px; }
+    .stage { height: 132px; margin: 0 0 5px; }
+    .character { width: 74px; height: 132px; }
+    .form { gap: 6px; }
+    .input-wrap input { padding-top: 11px; padding-bottom: 11px; }
+    .cat-container { margin-top: 1px; padding: 8px 10px 9px; }
+    .cat-label { margin-bottom: 5px; }
+    .chip { padding: 7px 3px 6px; }
+    .calc-btn { margin-top: 3px; padding: 12px; }
+  }
+
   @media (max-width: 360px) {
     .title { font-size: 32px; }
     .score { font-size: 62px; }
@@ -765,6 +800,105 @@
     .form-panel { max-height: 480px; }
     .splash-heart { width: 90px; height: 82px; }
     .splash-title { font-size: 28px; }
+  }
+
+  /* Android/mobile stability */
+  @media (max-width: 420px) {
+    body {
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+    .page { gap: 10px; }
+    .card { border-radius: 28px; padding: 16px 15px 20px; }
+    .stage { height: 154px; margin-bottom: 7px; }
+    .character { height: 146px; width: 81px; }
+    .char-left { left: 0; }
+    .char-right { right: 0; }
+    .form { gap: 8px; }
+    .input-wrap input { min-height: 50px; }
+    .cat-container { padding: 10px 10px 11px; }
+    .categories { gap: 6px; }
+    .chip { min-height: 48px; }
+    .share-btn { max-width: 400px; margin-inline: auto; }
+  }
+
+  @media (max-width: 340px) {
+    body { padding-left: 10px; padding-right: 10px; }
+    .title { font-size: 30px; }
+    .card { padding-left: 12px; padding-right: 12px; }
+    .character { width: 74px; height: 136px; }
+    .stage { height: 145px; }
+    .chip { font-size: 10px; }
+  }
+
+  @media (max-height: 700px) and (max-width: 600px) {
+    .hero { padding-top: 0; }
+    .title { font-size: 31px; }
+    .subtitle { margin-top: 3px; }
+    .stage { height: 132px; }
+    .character { height: 126px; }
+    .card { padding-top: 12px; }
+  }
+
+  /* Keep the complete app inside the browser's visible viewport.
+     The visualViewport value updates when Android's address bar or keyboard
+     changes the usable height, preventing the card from being cut off. */
+  :root { --visual-h: 100dvh; }
+  body { min-height: var(--visual-h); height: var(--visual-h); }
+
+  @media (max-width: 600px) and (min-height: 721px) {
+    body { align-items: center; justify-content: center; }
+  }
+
+  @media (max-width: 600px) and (max-height: 720px) {
+    body { align-items: flex-start; justify-content: flex-start; }
+    .page { gap: 5px; max-height: calc(var(--visual-h) - 10px); }
+    .hero { padding: 0; }
+    .title { font-size: 30px; }
+    .subtitle { margin-top: 1px; font-size: 11px; }
+    .card { padding: 10px 12px 12px; border-radius: 24px; }
+    .stage { height: 112px; margin: 0 0 3px; }
+    .character { width: 66px; height: 112px; }
+    .char-left { left: 0; }
+    .char-right { right: 0; }
+    .form { gap: 5px; }
+    .input-wrap input { min-height: 42px; padding-top: 8px; padding-bottom: 8px; font-size: 15px; }
+    .cat-container { margin-top: 0; padding: 6px 8px 7px; border-radius: 18px; }
+    .cat-label { margin-bottom: 4px; font-size: 9.5px; }
+    .categories { gap: 5px; }
+    .chip { min-height: 40px; padding: 6px 3px 5px; font-size: 10px; border-radius: 12px; }
+    .chip-emoji { font-size: 14px; }
+    .calc-btn { margin-top: 2px; min-height: 44px; padding: 9px; font-size: 15px; }
+  }
+
+  /* When the Android keyboard is visible, prioritize the two inputs and
+     keep the app from being pushed underneath the keyboard. */
+  body.keyboard-open .page {
+    transform: scale(0.92);
+    transform-origin: top center;
+    width: 108.7%;
+    max-width: 435px;
+  }
+  body.keyboard-open .hero {
+    display: none;
+  }
+  body.keyboard-open .card {
+    padding-top: 9px;
+    padding-bottom: 10px;
+  }
+  body.keyboard-open .stage { height: 96px; margin-bottom: 2px; }
+  body.keyboard-open .character { width: 60px; height: 96px; }
+  body.keyboard-open .form { gap: 4px; }
+  body.keyboard-open .input-wrap input { min-height: 40px; padding-top: 7px; padding-bottom: 7px; }
+  body.keyboard-open .cat-container { padding: 5px 8px 6px; }
+  body.keyboard-open .chip { min-height: 36px; padding: 5px 3px 4px; }
+  body.keyboard-open .chip-emoji { font-size: 13px; }
+  body.keyboard-open .calc-btn { min-height: 40px; padding: 8px; font-size: 14px; }
+
+  @media (max-width: 360px) {
+    body.keyboard-open .page { transform: scale(0.88); width: 113.6%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -919,44 +1053,44 @@
       <div class="form">
         <div class="input-wrap" id="wrap1">
           <span class="input-emoji">❤️</span>
-          <input id="name1" type="text" placeholder="Your name" autocapitalize="words" autocomplete="off" maxlength="24">
+          <input id="name1" type="text" placeholder="Your name" autocapitalize="words" autocomplete="given-name" inputmode="text" enterkeyhint="next" maxlength="24">
         </div>
         <div class="input-wrap" id="wrap2">
           <span class="input-emoji">💖</span>
-          <input id="name2" type="text" placeholder="Their name" autocapitalize="words" autocomplete="off" maxlength="24">
+          <input id="name2" type="text" placeholder="Their name" autocapitalize="words" autocomplete="name" inputmode="text" enterkeyhint="done" maxlength="24">
         </div>
 
         <div class="cat-container">
           <div class="cat-label">Who is this person?</div>
           <div class="categories" id="categories">
-            <button class="chip active" data-id="crush">
+            <button type="button" class="chip active" data-id="crush" aria-pressed="true">
               <span class="chip-emoji">💕</span>
               <span class="chip-label">Crush</span>
             </button>
-            <button class="chip" data-id="soulmate">
+            <button type="button" class="chip" data-id="soulmate" aria-pressed="false">
               <span class="chip-emoji">💍</span>
               <span class="chip-label">Soulmate</span>
             </button>
-            <button class="chip" data-id="friend">
+            <button type="button" class="chip" data-id="friend" aria-pressed="false">
               <span class="chip-emoji">🤝</span>
               <span class="chip-label">Friend</span>
             </button>
-            <button class="chip" data-id="secret">
+            <button type="button" class="chip" data-id="secret" aria-pressed="false">
               <span class="chip-emoji">🤫</span>
               <span class="chip-label">Secret</span>
             </button>
-            <button class="chip" data-id="ex">
+            <button type="button" class="chip" data-id="ex" aria-pressed="false">
               <span class="chip-emoji">💔</span>
               <span class="chip-label">Ex</span>
             </button>
-            <button class="chip" data-id="celebrity">
+            <button type="button" class="chip" data-id="celebrity" aria-pressed="false">
               <span class="chip-emoji">⭐</span>
               <span class="chip-label">Celeb</span>
             </button>
           </div>
         </div>
 
-        <button class="calc-btn" id="calcBtn">Calculate Love 💕</button>
+        <button type="button" class="calc-btn" id="calcBtn">Calculate Love 💕</button>
       </div>
     </div>
 
@@ -970,12 +1104,12 @@
         <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
         <div class="message" id="message"></div>
         <div class="message-sub" id="messageSub"></div>
-        <button class="again-btn" id="againBtn">Calculate Again 🔄</button>
+        <button type="button" class="again-btn" id="againBtn">Calculate Again 🔄</button>
       </div>
     </div>
   </main>
 
-  <button class="share-btn" id="shareBtn">
+  <button type="button" class="share-btn" id="shareBtn">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     Help your friend find their soulmate
   </button>
@@ -993,7 +1127,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   /* ================= SPLASH SCREEN ================= */
   (function handleSplash() {
     // Minimum time to show the splash (feels intentional, not janky)
-    const MIN_SHOW_MS = 4000;
+    const MIN_SHOW_MS = 3000;
     const start = performance.now();
 
     function hideSplash() {
@@ -1014,7 +1148,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       window.addEventListener('load', hideSplash);
     }
 
-    // Safety net: force hide after 3s no matter what (slow network fallback)
+    // Safety net: never leave a user stuck on the splash.
     setTimeout(() => {
       const splash = document.getElementById('splash');
       if (splash && !splash.classList.contains('hide')) {
@@ -1025,6 +1159,24 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }, 6000);
   })();
   /* ================================================= */
+
+  /* ================= MOBILE VIEWPORT FIT ================= */
+  (function fitToVisualViewport() {
+    const root = document.documentElement;
+    const update = () => {
+      const vv = window.visualViewport;
+      const h = vv ? vv.height : window.innerHeight;
+      root.style.setProperty('--visual-h', `${Math.max(320, h)}px`);
+      // When the keyboard is open, compact the UI so the card stays usable
+      // without introducing page scrolling.
+      const keyboardOpen = vv && (window.innerHeight - vv.height) > 120;
+      document.body.classList.toggle('keyboard-open', !!keyboardOpen);
+    };
+    update();
+    window.addEventListener('resize', update, { passive: true });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', update, { passive: true });
+  })();
+  /* ===================================================== */
 
   (function spawnBgHearts() {
     const container = document.getElementById('bgHearts');
@@ -1043,22 +1195,27 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const CATEGORIES = [
     { id: 'crush',     emoji: '💕', label: 'Crush',       mod: 0 },
-    { id: 'soulmate',  emoji: '💍', label: 'Soulmate',    mod: 15 },
-    { id: 'friend',    emoji: '🤝', label: 'Friend',      mod: -8 },
-    { id: 'secret',    emoji: '🤫', label: 'Secret Love', mod: 5 },
-    { id: 'ex',        emoji: '💔', label: 'Ex',          mod: -14 },
-    { id: 'celebrity', emoji: '⭐', label: 'Celebrity',   mod: 0 }
+    { id: 'soulmate',  emoji: '💍', label: 'Soulmate',    mod: 8 },
+    { id: 'friend',    emoji: '🤝', label: 'Friend',      mod: -6 },
+    { id: 'secret',    emoji: '🤫', label: 'Secret Love', mod: 4 },
+    { id: 'ex',        emoji: '💔', label: 'Ex',          mod: -8 },
+    { id: 'celebrity', emoji: '⭐', label: 'Celebrity',   mod: 2 }
   ];
   let selectedCat = CATEGORIES[0];
 
+  // Deterministic, playful scoring: same inputs always give the same result,
+  // but the distribution is intentionally warm rather than harsh. Unicode
+  // names are preserved so Indian-language names do not all collapse to one score.
   function loveScore(a, b, catId) {
-    const s = (a + b + catId).toLowerCase().replace(/[^a-z]/g, '');
-    let hash = 0;
-    for (let i = 0; i < s.length; i++) {
-      hash = (hash << 5) - hash + s.charCodeAt(i);
-      hash |= 0;
+    const s = `${a.normalize('NFKC')}|${b.normalize('NFKC')}|${catId}`.toLowerCase();
+    let hash = 2166136261;
+    for (const ch of s) {
+      hash ^= ch.codePointAt(0);
+      hash = Math.imul(hash, 16777619);
     }
-    return Math.abs(hash % 101);
+    const raw = (hash >>> 0) % 101;
+    // Bias toward the fun/positive middle-high range without making 90+ automatic.
+    return 30 + Math.round(Math.pow(raw / 100, 0.68) * 65);
   }
 
   const MESSAGES = [
@@ -1099,9 +1256,13 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   categoriesEl.addEventListener('click', e => {
     const chip = e.target.closest('.chip');
     if (!chip || chip.classList.contains('active')) return;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.remove('active');
+      c.setAttribute('aria-pressed', 'false');
+    });
     chip.classList.add('active');
-    selectedCat = CATEGORIES.find(c => c.id === chip.dataset.id);
+    chip.setAttribute('aria-pressed', 'true');
+    selectedCat = CATEGORIES.find(c => c.id === chip.dataset.id) || CATEGORIES[0];
   });
 
   function burstHearts() {
@@ -1232,9 +1393,19 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     return SHARE_MESSAGES[index].replace(/\{URL\}/g, url);
   }
 
-  function shareWhatsApp() {
+  async function shareWhatsApp() {
     const url = window.location.href.split('#')[0].split('?')[0];
     const text = pickShareMessage(url);
+
+    // Android Web Share is smoother when available; WhatsApp remains the fallback.
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Love Calculator 💕', text });
+        return;
+      } catch (err) {
+        if (err && err.name === 'AbortError') return;
+      }
+    }
     window.location.href = 'https://wa.me/?text=' + encodeURIComponent(text);
   }
 
@@ -1245,6 +1416,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     stage.classList.remove('kissing');
     progressFill.style.width = '0%';
     scoreVal.textContent = '0';
+    scoreNum.classList.remove('beat');
     input1.value = '';
     input2.value = '';
     hideShareReveal();
@@ -1258,8 +1430,17 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   calcBtn.addEventListener('click', calculate);
   shareBtn.addEventListener('click', shareWhatsApp);
   againBtn.addEventListener('click', reset);
-  input2.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
-  input1.addEventListener('keydown', e => { if (e.key === 'Enter') input2.focus(); });
+  input1.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      input2.focus();
+    }
+  });
+  // Enter in the second input no longer calculates.
+  // Calculation is triggered only by the Calculate Love button.
+  input2.addEventListener('keydown', e => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
 </script>
 </body>
 </html>
