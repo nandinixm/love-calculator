@@ -876,10 +876,12 @@
   /* When the Android keyboard is visible, prioritize the two inputs and
      keep the app from being pushed underneath the keyboard. */
   body.keyboard-open .page {
-    transform: scale(0.92);
-    transform-origin: top center;
-    width: 108.7%;
-    max-width: 435px;
+    /* Never scale the whole page when the keyboard opens.
+       Scaling makes the UI look zoomed-out on Android. Keep normal width
+       and only compact the pieces that need less vertical space. */
+    transform: none;
+    width: 100%;
+    max-width: 400px;
   }
   body.keyboard-open .hero {
     display: none;
@@ -896,10 +898,6 @@
   body.keyboard-open .chip { min-height: 36px; padding: 5px 3px 4px; }
   body.keyboard-open .chip-emoji { font-size: 13px; }
   body.keyboard-open .calc-btn { min-height: 40px; padding: 8px; font-size: 14px; }
-
-  @media (max-width: 360px) {
-    body.keyboard-open .page { transform: scale(0.88); width: 113.6%; }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1127,7 +1125,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   /* ================= SPLASH SCREEN ================= */
   (function handleSplash() {
     // Minimum time to show the splash (feels intentional, not janky)
-    const MIN_SHOW_MS = 3000;
+    const MIN_SHOW_MS = 4000;
     const start = performance.now();
 
     function hideSplash() {
@@ -1156,7 +1154,7 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         document.body.classList.remove('splashing');
         setTimeout(() => splash.remove(), 800);
       }
-    }, 6000);
+    }, 7000);
   })();
   /* ================================================= */
 
